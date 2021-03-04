@@ -3,6 +3,7 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 #################
 # Random class
 #################
@@ -42,29 +43,23 @@ class Random:
     def rand(self):
         return 5.42101086242752217E-20 * self.int64()
 
-    # function returns a random double (0 to infty) according to an exponential distribution
-    def Exponential(self, beta=1.):
-      # make sure beta is consistent with an exponential
-      if beta <= 0.:
-        beta = 1.
 
-      R = self.rand();
+    # rayleigh distribution
+    def Rayleigh(self):
+        
+         R = self.rand()
 
-      while R <= 0.:
-        R = self.rand()
-
-      X = -math.log(R)/beta
-
-      return x
-
-
+         X =(0.21)* (-2*math.log(R))**(1/2)
+         
+         return X
 
 #loop Rayleigh through an empty array to create distribution
+
 random = Random()
 n=100000
-a = []
+a =[]
 for x in range(0,n):
-   a.append(random.Exponential())
+   a.append(random.Rayleigh())
 
 #plot array
 n, bins, patches = plt.hist(a, 50, density=True, facecolor='g', alpha=0.75)
@@ -72,5 +67,5 @@ plt.xlabel('x', fontsize = 16, color = "blue")
 plt.ylabel('Probability', fontsize = 16, color = "red")
 plt.title('Exponential distribution')
 plt.grid(True)
-
 plt.show()
+
