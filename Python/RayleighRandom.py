@@ -21,7 +21,7 @@ def Rayleigh(x):
 def PlotRayleigh(x,bin_width):
 	return bin_width*Rayleigh(x)
 
-# Uniform (flat) distribution scaled to Gaussian max
+# Uniform (flat) distribution 
 # Note: multiply by bin width to match histogram
 def Flat(x):
 	return 6.1
@@ -33,7 +33,7 @@ def PlotFlat(x,bin_width):
 def SampleFlat():
 	return Xmin + (Xmax-Xmin)*random.rand()
 
-# Piecewise flat with exponential tails, scaled to Gaussian max
+# Piecewise flat with exponential tails, scaled to Rayleigh max
 # Note: multiply by bin width to match histogram
 def FlatPlusExpo(x):
 	if x <= Xmin/4.:
@@ -139,11 +139,8 @@ if __name__ == "__main__":
 	else:
 		y_flat = list(map(PlotFlatPlusExpo,x,np.ones_like(x)*bin_width))
 
-	
 	plt.plot(x,y_flat,color='red',label='proposal g(x)')
 	plt.title("Density estimation with Monte Carlo")
-
-	
+	plt.savefig("RandomRayleigh.png")
 	plt.legend()
 	plt.show()
-	plt.savefig("RandomGaussPy.png")
