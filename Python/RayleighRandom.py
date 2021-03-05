@@ -1,28 +1,30 @@
 import numpy as np
 import sys
 import matplotlib.pyplot as plt
+import math
 
 sys.path.append(".")
-from Random import Random 
+from Random2 import Random 
 
 #global variables
 bin_width = 0.
-Xmin = -1.
+Xmin = 0.
 Xmax = 1.
 random = Random()
 
-# Normal distribution with mean zero and sigma = 1
+# Rayleigh distribution
 # Note: multiply by bin width to match histogram
-def Gaus(x):
-	return (1./np.sqrt(2.*np.arccos(-1)))*np.exp(-x*x/2.)
+def Rayleigh(x):
+	return ((x/(0.1**2))*np.exp(-x*x/(2*(0.1**2))))
 
-def PlotGaus(x,bin_width):
-	return bin_width*Gaus(x)
+
+def PlotRayleigh(x,bin_width):
+	return bin_width*Rayleigh(x)
 
 # Uniform (flat) distribution scaled to Gaussian max
 # Note: multiply by bin width to match histogram
 def Flat(x):
-	return 1./np.sqrt(2*np.arccos(-1.))
+	return 6.1
 	
 def PlotFlat(x,bin_width):
 	return bin_width*Flat(x)
@@ -35,15 +37,14 @@ def SampleFlat():
 # Note: multiply by bin width to match histogram
 def FlatPlusExpo(x):
 	if x <= Xmin/4.:
-		return 1./np.sqrt(2.*np.arccos(-1))*np.exp(Xmin*Xmin/8.)*np.exp(-Xmin/2.*x)
+		return ((x/(0.1**2)))*np.exp(Xmin*Xmin/8.)*np.exp(-Xmin/2.*x)
 	elif x >= Xmax/4.:
-		return 1./np.sqrt(2.*np.arccos(-1))*np.exp(Xmax*Xmax/8.)*np.exp(-Xmax/2.*x)
+		return ((x/(0.1**2)))*np.exp(Xmax*Xmax/8.)*np.exp(-Xmax/2.*x)
 	else:
-		return 1./np.sqrt(2*np.arccos(-1))
+		return ((x/(0.1**2)))
 
 def PlotFlatPlusExpo(x, bin_width):
   return bin_width*FlatPlusExpo(x);
-
 
 # Get a random X value according to flat plus exponentials distribution
 def SampleFlatPlusExpo():
@@ -58,9 +59,6 @@ def SampleFlatPlusExpo():
     return -2./Xmax*np.log(F*np.exp(-Xmax*Xmax/2.)+(1.-F)*np.exp(-Xmax*Xmax/8))
   else:
 	  return Xmin/4. + (Xmax-Xmin)/4.*random.rand();
-
-
-
 
 #main function
 if __name__ == "__main__":
@@ -100,10 +98,10 @@ if __name__ == "__main__":
 		Ntrial += 1
 		if doExpo:
 			X = SampleFlatPlusExpo()
-			R = Gaus(X)/FlatPlusExpo(X)
+			R = Rayleigh(X)/FlatPlusExpo(X)
 		else:
 			X = SampleFlat()
-			R = Gaus(X)/Flat(X)
+			R = Rayleigh(X)/Flat(X)
 		rand = random.rand()
 		if(rand > R): #reject if outside
 			continue
@@ -124,16 +122,15 @@ if __name__ == "__main__":
 	hist_max = max(n[0])
 
 	if not doLog:
-		plt.ylim(min(bin_width*Gaus(Xmax),1./float(Nsample+1)),
-		1.5*max(hist_max,bin_width*Gaus(0)))
+		plt.ylim(min(bin_width*Rayleigh(Xmax),1./float(Nsample+1)),
+		1.5*max(hist_max,bin_width*Rayleigh(0)))
 	else:
-		plt.ylim(min(bin_width*Gaus(Xmax),1./float(Nsample+1)),
-		80*max(hist_max,bin_width*Gaus(0)))
+		plt.ylim(min(bin_width*Rayleigh(Xmax),1./float(Nsample+1)),
+		80*max(hist_max,bin_width*Rayleigh(0)))
 		plt.yscale("log")
 
-
 	x = np.arange(Xmin,Xmax,0.001)
-	y_norm = list(map(PlotGaus,x,np.ones_like(x)*bin_width))
+	y_norm = list(map(PlotRayleigh,x,np.ones_like(x)*bin_width))
 	# y_norm = list(map(PlotGaus(x,bin_width))
 	plt.plot(x,y_norm,color='green',label='target f(x)')
 
@@ -149,4 +146,4 @@ if __name__ == "__main__":
 	
 	plt.legend()
 	plt.show()
-#	plt.savefig("RandomGaussPy.pdf")
+	plt.savefig("RandomGaussPy.pdf")

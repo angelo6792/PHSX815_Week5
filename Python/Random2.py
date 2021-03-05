@@ -4,7 +4,7 @@
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-
+import math
 #################
 # Random class
 #################
@@ -43,6 +43,19 @@ class Random:
     def rand(self):
         return 5.42101086242752217E-20 * self.int64()
 
+    # rayleigh distribution
+    def Rayleigh(self):
+        
+         R = self.rand()
+
+         while R <= 0.:
+           R = self.rand() 
+
+         X =(0.21)* (-2*math.log(R))**(1/2)
+         while x > 1:
+           R = self.rand()
+         return X
+
 # main function for this Python code
 if __name__ == "__main__":
     # if the user includes the flag -h or --help print the options
@@ -80,6 +93,7 @@ if __name__ == "__main__":
     n, bins, patches = plt.hist(myx, 50, density=True, facecolor='g', alpha=0.75)
 
     # plot formating options
+
     plt.xlabel('x')
     plt.ylabel('Probability')
     plt.title('Uniform random number')
@@ -87,3 +101,4 @@ if __name__ == "__main__":
 
     # show figure (program only ends once closed
     plt.show()
+
